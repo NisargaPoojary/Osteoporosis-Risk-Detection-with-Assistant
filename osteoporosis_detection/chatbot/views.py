@@ -2,12 +2,12 @@ from django.shortcuts import render
 from django.http import JsonResponse
 import openai
 import json
+from decouple import config
 
 openai.api_base = "https://integrate.api.nvidia.com/v1"
-openai.api_key = "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"  #YOUR API KEY
+openai.api_key = config('NVIDIA_API_KEY')  
 
 system_message = {"role": "system", "content": "You are a helpful assistant."}
-
 messages = [system_message]
 
 def chatbot_view(request):
@@ -29,19 +29,19 @@ def chatbot_view(request):
                 messages=messages,
                 temperature=0.5,
                 max_tokens=1024,
-                stream=False  
+                stream=False
             )
 
-            bot_reply = response['choices'][0]['message']['content']  
+            bot_reply = response['choices'][0]['message']['content']
             bot_reply_lines = bot_reply.split("\n")
             formatted_reply = []
             for line in bot_reply_lines:
                 clean_line = line.replace("*", "").replace("#", "").strip()
                 if clean_line:
-                    if clean_line.endswith(":"):  
-                        formatted_reply.append(f"\n{clean_line}")  
+                    if clean_line.endswith(":"):
+                        formatted_reply.append(f"\n{clean_line}")
                     else:
-                        formatted_reply.append(f"{clean_line}")  
+                        formatted_reply.append(f"{clean_line}")
 
             bot_reply = "\n".join(formatted_reply).strip()
 
