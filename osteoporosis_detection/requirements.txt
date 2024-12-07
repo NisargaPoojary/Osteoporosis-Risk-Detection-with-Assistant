@@ -4,4 +4,7 @@ scikit-learn
 openai==0.28
 Django
 joblib
+<<<<<<< HEAD
 mysqlclient
+=======
+>>>>>>> 8d8075f (Initial commit)

@@ -5,8 +5,8 @@ from django.http import JsonResponse
 import warnings
 warnings.filterwarnings('ignore')
 
-# Load the model
-model = joblib.load(r'C:\Users\HP\Osteoporosis _risk_detection\osteoporosis_model.pkl')
+
+model = joblib.load(r'C:\Users\HP\Osteoporosis\osteoporosis_model.pkl')
 
 def predict_osteoporosis(request):
     if request.method == 'POST':

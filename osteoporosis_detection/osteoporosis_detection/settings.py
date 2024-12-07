@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'detection',
     'chatbot',
-    'user',
 ]
 
 MIDDLEWARE = [
@@ -82,12 +81,13 @@ WSGI_APPLICATION = 'osteoporosis_detection.wsgi.application'
 
 DATABASES = {
     'default': {
-       'ENGINE': 'django.db.backends.mysql',
-        'NAME': "osteoporosis",
-        "USER": "root",
-        "PASSWORD": "Nisarga@02",
-        "HOST": "localhost",
-        "PORT": "3306"
+
+       'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': "db.sqlite3",
+        "USER": "",
+        "PASSWORD": "",
+        "HOST": "",
+        "PORT": ""
     }
 }
 
