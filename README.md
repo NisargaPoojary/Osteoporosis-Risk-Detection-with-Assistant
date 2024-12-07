@@ -1,1 +1,0 @@
-# Osteoporosis-Risk-Detection-using-Assistant
