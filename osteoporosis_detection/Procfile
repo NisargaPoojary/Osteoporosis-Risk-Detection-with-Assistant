@@ -1,1 +1,0 @@
-web: gunicorn osteoporosis_detection.wsgi:application
