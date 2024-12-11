@@ -5,7 +5,7 @@ This project aims to detect the risk of osteoporosis using a machine learning mo
 Users can create an account or log in to access personalized risk assessments and save their data.
 
 ![WhatsApp Image 2024-12-11 at 13 43 44_9aba5383](https://github.com/user-attachments/assets/6535deec-d89f-4c87-a260-16bc02c4d71e)
-# Sign up page
+# Sign up Page
 ![WhatsApp Image 2024-12-11 at 13 44 47_ed850622](https://github.com/user-attachments/assets/a4279539-c537-4562-aa72-a4a0adb6b516)
 
 # Home Page
