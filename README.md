@@ -9,7 +9,7 @@ Users can create an account or log in to access personalized risk assessments an
 ![WhatsApp Image 2024-12-11 at 13 44 47_ed850622](https://github.com/user-attachments/assets/a4279539-c537-4562-aa72-a4a0adb6b516)
 
 # Home Page
-Users can input health-related information such as age, gender, weight, height, and other relevant factors.
+Users can input health-related information such as age, gender, weight Category , height, and other relevant factors.
 The system calculates and displays the risk of osteoporosis, along with a percentage indicating the probability of being at risk. 
 
 ![WhatsApp Image 2024-12-11 at 13 44 46_2f0f0fd8](https://github.com/user-attachments/assets/6ad2512b-a48e-4a85-8460-592277d4d5cb)
