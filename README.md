@@ -23,6 +23,6 @@ The chatbot answers user queries about osteoporosis and related health concerns.
 If users do not know their weight category, they can use the built-in BMI calculator.
 The BMI calculator automatically determines the user's BMI based on weight and height and categorizes them accordingly.
 
-![Screenshot 2024-12-11 135638](https://github.com/user-attachments/assets/7a3cf2bd-55a0-4839-b086-232f8a2dc5cd)
+![Screenshot 2024-12-11 140621](https://github.com/user-attachments/assets/683c1372-6d9a-4501-9d4b-296433ef6964)
 
 
