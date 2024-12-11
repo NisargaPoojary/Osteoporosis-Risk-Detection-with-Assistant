@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    background-color: #f9f9f9; 
+    background-image: url("{% static 'images/osteoporosis risk prediction.png' %}");
+    background-size: 115%; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+}
+
+.login-container {
+    background:rgb(148, 195, 222); 
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); 
+}
+header {
+    background-color: #000040;  
+    color: #fff;              
+    text-align: center;         
+    padding: 20px;              
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
+    position: fixed;          
+    top: 0;                
+    left: 0;                 
+    width: 100%;                
+    z-index: 1000;           
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+</style>
+<body>
+    <header>
+        <h1>Osteoporosis Risk Prediction</h1>
+    </header>
+
+    <div class="login-container">
+        <h2>Login</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    required 
+                    autocomplete="new-password" 
+                    pattern="(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{7,}" 
+                    title="Password must be at least 7 characters long, contain at least one special character, and one numeric digit.">
+            </div>
+            
+            <button type="submit">Login</button>
+        </form>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <p>Don't have an account? <a href="{% url 'signup' %}">Sign Up</a></p>
+    </div>
+</body>
+</html>

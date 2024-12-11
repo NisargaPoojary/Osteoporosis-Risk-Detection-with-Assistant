@@ -1,0 +1,446 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osteoporosis Risk Prediction</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+
+</head>
+<style>
+    .chatbot-window {
+        position: fixed;
+        width: 500px;
+        height: 500px;
+        position: fixed;
+        bottom: 75px;
+        right: 20px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+        font-family: Arial, sans-serif;
+        display: none;
+        flex-direction: column;
+        z-index: 1000;
+}
+  
+.chatbot-message-container {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column; 
+}
+
+.chatbot-footer {
+    display: flex;
+    padding: 10px;
+    background-color: #f0f0f0;
+}
+
+.chatbot-input {
+    width: 80%;
+    padding: 8px;
+    margin-right: 5px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+}
+
+.chatbot-message {
+    padding: 8px 15px;
+    margin: 5px 0;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    position: relative; 
+    background-color: #f1f1f1; 
+    max-width: fit-content;
+    width: auto; 
+    word-wrap: break-word; 
+}
+.user-message {
+    background-color: white;
+    color: black;
+    align-self: flex-end;
+    margin-left: auto; 
+    display: flex;
+    align-items: center; 
+}
+
+.bot-message {
+    background-color: #000040;
+    color: white;
+    align-self: flex-start; 
+    display: flex;
+    align-items: center; 
+}
+
+.message-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute; 
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: -30px; 
+    margin-right: -10px; 
+}
+
+.chatbot-message span {
+    flex: 1; 
+}
+.send-button {
+        width: 15%;
+        padding: 10px;
+        background-color: #000040;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+.bot-typing {
+    background-color: #000040; 
+    color: white;
+    padding: 8px 15px;
+    margin: 5px 0;
+    border-radius: 15px;
+    max-width: 80%;
+    align-self: flex-start; 
+    display: flex;
+    align-items: center; 
+    width: fit-content; 
+}
+.user-circle {
+    width: 50px; 
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid #ccc; 
+}
+
+.user-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@media (max-width: 600px) {
+    .chatbot-window {
+        width: 90%;
+        height: 70%;
+        bottom: 10px;
+        right: 5%;
+    }
+}
+
+</style>
+<body>
+    <header>
+        <h1>Osteoporosis Risk Prediction</h1>
+        <div class="user-profile">
+            <div class="user-circle" onclick="toggleDropdown()">
+                <img src="static/images/user.png" alt="User" class="user-image">
+            </div>
+            <div id="dropdown-menu" class="dropdown-menu">
+                <p id="username">{{user.username}}</p>
+                <button onclick="logout()">Log Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>Enter Your Details</h2>
+        <form id="prediction-form" method="post" action="{% url 'predict_osteoporosis' %}">
+            {% csrf_token %}
+            
+            <div class="form-row">
+                <label for="age">Age:</label>
+                <input type="number" name="age" id="age" required min="1" placeholder="Enter your age">
+            
+                
+                <label for="gender">Gender:</label>
+                <select name="gender" id="gender" required>
+                    <option value="" selected>Select</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+        
+            <div class="form-row">
+                <label for="race">Race:</label>
+                <select name="race" id="race" required>
+                    <option value="" selected>Select</option>
+                    <option value="Asian">Asian</option>
+                    <option value="Caucasian">Caucasian</option>
+                    <option value="African American">African American</option>
+                </select>
+                </div>
+                <div class="form-row">
+
+                <label for="medications"style="margin-right: 10px;">Medications:</label>
+                <select name="medications" id="medications" required>
+                    <option value="" selected>Select</option>
+                    <option value="None">None</option>
+                    <option value="Corticosteroids">Corticosteroids</option>
+                </select>
+            </div>
+           
+
+            <div class="form-row">
+                <label for="medical_conditions" style="margin-right: 10px;">Medical Conditions:</label>
+                <select name="medical_conditions" id="medical_conditions" required>
+                    <option value="" selected>Select</option>
+                    <option value="None">None</option>
+                    <option value="Hyperthyroidism">Hyperthyroidism</option>
+                    <option value="Rheumatoid Arthritis">Rheumatoid Arthritis</option>
+                </select>
+                </div>
+
+                <div class="form-row">
+                    <label for="weight" style="margin-right: 10px;">Weight Category:</label>
+                    <select name="weight" id="weight" required>
+                        <option value="" selected>Select</option>
+                        <option value="Underweight">Underweight</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Overweight">Overweight</option>
+                    </select>
+                    <div>
+                        <a href="{% url 'bmi_calculator' %}" style="color: #007bff; text-decoration: underline; margin-left: 15px;">
+                        Calculate your BMI
+                       </a>
+                  </div>
+                </div>
+                
+            <div class="form-row">
+                <label for="hormonal_changes" style="margin-right: 10px;">Hormonal Changes:</label>
+                <select name="hormonal_changes" id="hormonal_changes" required>
+                    <option value="" selected>Select</option>
+                    <option value="Normal">Normal</option>
+                    <option value="Postmenopausal">Postmenopausal</option>
+                </select>
+            </div>
+                
+           
+        
+            <div class="form-row"> 
+                <label for="calcium_intake" style="margin-right: 10px;">Calcium Intake:</label>
+                <select name="calcium_intake" id="calcium_intake" required>
+                    <option value="" selected>Select</option>
+                    <option value="Low">Low (< 1000 mg/day for adults, < 1200 mg/day for older adults)</option>
+                    <option value="Adequate">Adequate (Adults: 1000-1200 mg/day, Older adults: 1200 mg/day)</option>
+                </select>
+            </div>
+            
+            <div class="form-row">
+                <label for="vitamin_d_intake" style="margin-right: 10px;">Vitamin D Intake:</label>
+                <select name="vitamin_d_intake" id="vitamin_d_intake" required>
+                    <option value="" selected>Select</option>
+                    <option value="Insufficient">Insufficient (Serum 25(OH)D < 20 ng/mL, or < 600 IU/day)</option>
+                    <option value="Sufficient">Sufficient (Serum 25(OH)D 30-100 ng/mL, or 600-1000 IU/day)</option>
+                </select>
+            </div>
+            
+        
+            <div class="form-row">
+                <label for="physical_activity" style="margin-right: 10px;">Physical Activity:</label>
+                <select name="physical_activity" id="physical_activity" required>
+                    <option value="" selected>Select</option>
+                    <option value="Sedentary">Sedentary</option>
+                    <option value="Active">Active</option>
+                </select>
+        </div>
+        <div class="question">
+            <span>Do you consume alcohol?</span>
+            <div class="options">
+              <label><input type="radio" name="alcohol" value="no">No</label>
+              <label><input type="radio" name="alcohol" value="yes">Yes</label>
+            </div>
+          </div>
+          
+          <div class="question">
+            <span>Do you smoke?</span>
+            <div class="options">
+              <label><input type="radio" name="smoke" value="no">No</label>
+              <label><input type="radio" name="smoke" value="yes">Yes</label>
+            </div>
+          </div>
+          <div class="question">
+            <label for="family_history">Either of you parents ever had Osteoporosis?</label>
+            <div class="options">
+              <label><input type="radio" name="family_history" id="family_history_no" value="0" required>No</label>
+              <label><input type="radio" name="family_history" id="family_history_yes" value="1" required>Yes</label>
+            </div>
+          </div>
+        <div class="question">
+            <label for="prior_fractures">Previous Fractures:</label>
+            <div class="options">
+              <label><input type="radio" name="prior_fractures" id="prior_fractures_no" value="0" required>No</label>
+              <label><input type="radio" name="prior_fractures" id="prior_fractures_yes" value="1" required>Yes</label>
+            </div>
+          </div>
+            
+        
+            <button type="submit">Predict</button>
+        </form>
+        
+        
+
+        <div class="result-container" id="result-container">
+            <h3>Prediction Results</h3>
+            <p id="result"></p>
+            <p id="confidence"></p>
+        </div>
+    </div>
+
+    <div id="chatbotButton" class="chatbot-button">
+        <span>🤖</span>
+    </div>
+    
+    <div id="chatbot" class="chatbot-window">
+        <div class="chatbot-header">
+            <h3 class="chat-title"></h3>
+            <button id="closeChatbot" class="close-button">🗙</button>
+        </div>
+        <div class="chatbot-message-container">
+            <div class="chatbot-chat"></div>
+        </div>
+        <div class="chatbot-footer">
+            <input type="text" class="chatbot-input" placeholder="Type here for help">
+            <button class="send-button">➤</button>
+        </div>
+    </div>
+    
+
+    <script>
+        const chatbotButton = document.getElementById('chatbotButton');
+        const chatbotWindow = document.getElementById('chatbot');
+        const closeChatbotButton = document.getElementById('closeChatbot');
+        const chatInput = document.querySelector('.chatbot-input');
+        const sendButton = document.querySelector('.send-button');
+        const messagesDiv = document.querySelector('.chatbot-chat');
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value; 
+    
+        chatbotButton.addEventListener('click', () => {
+            chatbotWindow.style.display = 'flex';
+        });
+    
+        closeChatbotButton.addEventListener('click', () => {
+            chatbotWindow.style.display = 'none';
+        });
+    
+        sendButton.addEventListener('click', sendMessage);
+    
+        chatInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    
+        async function sendMessage() {
+    const userMessage = chatInput.value.trim();
+
+    if (userMessage !== '') {
+        const userMessageElement = document.createElement('div');
+        userMessageElement.classList.add('chatbot-message', 'user-message');
+        
+        const userEmojiElement = document.createElement('span');
+        userEmojiElement.classList.add('message-icon');
+        userEmojiElement.textContent = '👤'; 
+
+        const userMessageTextElement = document.createElement('span');
+        userMessageTextElement.textContent = ` ${userMessage}`; 
+        
+        userMessageElement.appendChild(userEmojiElement);
+        userMessageElement.appendChild(userMessageTextElement);
+        
+        messagesDiv.appendChild(userMessageElement);
+
+        chatInput.value = '';
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+        const botTypingElement = document.createElement('div');
+        botTypingElement.classList.add('chatbot-message', 'bot-typing');
+        
+        const botEmojiElement = document.createElement('span');
+        botEmojiElement.classList.add('message-icon');
+        botEmojiElement.textContent = '🤖'; 
+
+        const botTypingTextElement = document.createElement('span');
+        botTypingTextElement.textContent = ' ...'; 
+
+        botTypingElement.appendChild(botEmojiElement);
+        botTypingElement.appendChild(botTypingTextElement);
+        
+        messagesDiv.appendChild(botTypingElement);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+        try {
+            const response = await fetch('/chatbot/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken, 
+                },
+                body: JSON.stringify({ message: userMessage }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+
+            botTypingTextElement.textContent = ` ${data.reply || 'Sorry, I couldn\'t process your message.'}`;
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        } catch (error) {
+            console.error('Error:', error);
+            botTypingTextElement.textContent = ` Sorry, an error occurred while processing your message.`;
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+    }
+}
+    </script>
+
+
+    <script>
+        document.getElementById('prediction-form').onsubmit = async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch(this.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            document.getElementById('result-container').style.display = 'block';
+            document.getElementById('result').innerText = result.result;
+            document.getElementById('confidence').innerText = `Percentage of having Osteoporosis: ${result.probability}`;
+        };
+    </script>
+    
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown-menu');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+    
+        function logout() {
+            alert('Logged out');
+            window.location.href = '/logout';  
+        }
+    </script>
+    
+
+    
+</body>
+</html>

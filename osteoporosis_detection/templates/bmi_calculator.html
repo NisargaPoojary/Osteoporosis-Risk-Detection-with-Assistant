@@ -1,0 +1,127 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f4f8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; 
+        overflow: hidden; 
+    }
+    .container {
+        background: rgb(148, 195, 222);
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px; 
+        text-align: center;
+    }
+    .input-group {
+        margin-bottom: 15px;
+    }
+    .hidden {
+        display: none;
+    }
+</style>
+<body>
+    <div class="container">
+        <h1>BMI Calculator</h1>
+        <form id="bmi-calculator">
+            <div class="input-group">
+                <label for="height-option">Select Height Unit:</label><br>
+                <div style="display: flex; justify-content: space-between; width: 100%;">
+                    <div>
+                        <input type="radio" name="height-option" id="height-cm-option" value="cm" checked onchange="toggleHeightInput()"> Centimeters
+                    </div>
+                    <div>
+                        <input type="radio" name="height-option" id="height-ft-option" value="ft" onchange="toggleHeightInput()"> Feet & Inches
+                    </div>
+                </div>
+            </div>
+            <div class="input-group" id="height-cm-group">
+                <label for="height-cm">Height (in Centimeters):</label>
+                <input type="number" id="height-cm" placeholder="Centimeters">
+            </div>
+            <div class="input-group hidden" id="height-ft-group">
+                <label for="height-ft">Height (in Feet and Inches):</label>
+                <input type="number" id="height-ft" placeholder="Feet" style="width: 45%; margin-right: 5px;">
+                <input type="number" id="height-in" placeholder="Inches" style="width: 45%;">
+            </div>
+            <div class="input-group">
+                <label for="weight">Weight (in Kilograms):</label>
+                <input type="number" id="weight" placeholder="Kilograms" required>
+            </div>
+            <button type="button" onclick="calculateBMI()">Calculate</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function toggleHeightInput() {
+            const isCmSelected = document.getElementById('height-cm-option').checked;
+            const heightCmGroup = document.getElementById('height-cm-group');
+            const heightFtGroup = document.getElementById('height-ft-group');
+
+            if (isCmSelected) {
+                heightCmGroup.classList.remove('hidden');
+                heightFtGroup.classList.add('hidden');
+            } else {
+                heightFtGroup.classList.remove('hidden');
+                heightCmGroup.classList.add('hidden');
+            }
+        }
+        function calculateBMI() {
+            const isCmSelected = document.getElementById('height-cm-option').checked;
+            const weight = document.getElementById('weight').value;
+            let height = null;
+
+            if (isCmSelected) {
+                const heightCm = document.getElementById('height-cm').value;
+                if (heightCm) {
+                    height = heightCm / 100; 
+                }
+            } else {
+                const heightFt = document.getElementById('height-ft').value;
+                const heightIn = document.getElementById('height-in').value;
+                if (heightFt || heightIn) {
+                    const heightInches = (parseFloat(heightFt || 0) * 12) + parseFloat(heightIn || 0);
+                    height = heightInches * 2.54; 
+                    height = height / 100; 
+                }
+            }
+
+            if (height && weight) {
+                const bmi = (weight / (height * height)).toFixed(1);
+                let category;
+
+                if (bmi < 18.5) {
+                    category = "Underweight";
+                } else if (bmi < 25) {
+                    category = "Normal";
+                } else {
+                    category = "Overweight";
+                }
+
+                document.getElementById('result').innerHTML = `
+                    <h2>BMI: ${bmi} (${category})</h2>
+                `;
+            } else {
+                alert("Please enter valid height and weight.");
+            }
+        }
+    </script>
+</body>
+</html>
